@@ -39,7 +39,7 @@ public class DatabaseManager extends OrmLiteSqliteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase database, ConnectionSource connectionSource) {
         try {
-            TableUtils.clearTable(connectionSource, ScheduledItem.class);
+            TableUtils.createTable(connectionSource, ScheduledItem.class);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
