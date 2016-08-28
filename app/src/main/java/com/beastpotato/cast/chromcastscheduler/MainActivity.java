@@ -13,12 +13,13 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.beastpotato.cast.chromcastscheduler.fragments.CreateItemFragment;
+import com.beastpotato.cast.chromcastscheduler.managers.CastManager;
 import com.beastpotato.cast.chromcastscheduler.models.ScheduledItem;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements CreateItemFragment.OnAddItemDialogDone, LayoutItemRowAdapter.OnItemDeleteClickListener {
+public class MainActivity extends AppCompatActivity implements CreateItemFragment.OnAddItemDialogDone, LayoutItemRowAdapter.OnItemDeleteClickListener, LayoutItemRowAdapter.OnItemClickListener {
     private CoordinatorLayout root;
     private RecyclerView itemsView;
     private List<ScheduledItem> items;
@@ -41,7 +42,10 @@ public class MainActivity extends AppCompatActivity implements CreateItemFragmen
         });
 
         items = new ArrayList<>();//todo load from database
-        itemsView.setAdapter(new LayoutItemRowAdapter(items, this));
+        LayoutItemRowAdapter rowAdapter = new LayoutItemRowAdapter(items, this);
+        rowAdapter.setDeleteClickListener(this);
+        rowAdapter.setOnItemClickListener(this);
+        itemsView.setAdapter(rowAdapter);
         itemsView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
     }
 
@@ -88,5 +92,14 @@ public class MainActivity extends AppCompatActivity implements CreateItemFragmen
         items.remove(item);
         itemsView.getAdapter().notifyDataSetChanged();
         //todo remove from db
+    }
+
+    @Override
+    public void onItemClick(ScheduledItem item, View view) {
+        try {
+            CastManager.getInstance(this).playVideo(this, item.url, item.deviceId);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

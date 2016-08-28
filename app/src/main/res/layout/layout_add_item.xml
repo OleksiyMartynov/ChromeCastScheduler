@@ -8,11 +8,18 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/devices_list"
+        android:layout_below="@id/item_date"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#ffffff" />
+
     <android.support.design.widget.TextInputLayout
         android:id="@+id/item_name_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/item_date">
+        android:layout_below="@+id/devices_list">
 
         <EditText
             android:id="@+id/item_name"
@@ -35,5 +42,6 @@
             android:hint="Url ending with .mp4"
             android:inputType="textUri" />
     </android.support.design.widget.TextInputLayout>
+
 
 </RelativeLayout>

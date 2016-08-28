@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_cast_device"
+    android:padding="2dp"
+    android:layout_margin="2dp">
+
+    <ImageView
+        android:id="@+id/device_icon"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginLeft="5dp"
+        android:src="@drawable/ic_cast" />
+
+    <TextView
+        android:id="@+id/device_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/device_icon"
+        android:layout_alignTop="@+id/device_icon"
+        android:layout_marginLeft="5dp"
+        android:layout_toRightOf="@+id/device_icon"
+        android:gravity="center_vertical"
+        android:textColor="#ffffff"
+        tools:text="Device name" />
+
+    <CheckBox
+        android:id="@+id/device_check"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/device_icon"
+        android:layout_alignTop="@+id/device_icon"
+        android:layout_toRightOf="@+id/device_name"
+        android:buttonTint="#ffffff" />
+
+</RelativeLayout>

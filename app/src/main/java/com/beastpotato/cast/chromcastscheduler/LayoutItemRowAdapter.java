@@ -16,6 +16,7 @@ public class LayoutItemRowAdapter extends RecyclerView.Adapter<LayoutItemRowAdap
 
     private List<ScheduledItem> objects = new ArrayList();
     private OnItemDeleteClickListener deleteClickListener;
+    private OnItemClickListener onItemClickListener;
 
     public LayoutItemRowAdapter(List<ScheduledItem> items, OnItemDeleteClickListener deleteClickListener) {
         this.objects = items;
@@ -42,9 +43,10 @@ public class LayoutItemRowAdapter extends RecyclerView.Adapter<LayoutItemRowAdap
         return objects.size();
     }
 
-    private void initializeViews(final ScheduledItem object, ViewHolder holder) {
+    private void initializeViews(final ScheduledItem object, final ViewHolder holder) {
         holder.rowTime.setText(object.hour + ":" + object.minute);
         holder.rowName.setText(object.name);
+        holder.rowDeviceName.setText(object.deciveName);
         holder.rowUrl.setText(object.url);
         holder.deleteIcon.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -54,30 +56,49 @@ public class LayoutItemRowAdapter extends RecyclerView.Adapter<LayoutItemRowAdap
                 }
             }
         });
+        holder.view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (onItemClickListener != null) {
+                    onItemClickListener.onItemClick(object, holder.view);
+                }
+            }
+        });
     }
 
     public void setDeleteClickListener(OnItemDeleteClickListener deleteClickListener) {
         this.deleteClickListener = deleteClickListener;
     }
 
+    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
+        this.onItemClickListener = onItemClickListener;
+    }
+
     public interface OnItemDeleteClickListener {
         void onDelete(ScheduledItem item);
     }
 
+    public interface OnItemClickListener {
+        void onItemClick(ScheduledItem item, View view);
+    }
+
     protected class ViewHolder extends RecyclerView.ViewHolder {
+        private View view;
         private ImageView rowIcon, deleteIcon;
         private TextView rowTime;
         private TextView rowName;
         private TextView rowUrl;
-
+        private TextView rowDeviceName;
 
         public ViewHolder(View view) {
             super(view);
+            this.view = view;
             rowIcon = (ImageView) view.findViewById(R.id.row_icon);
             deleteIcon = (ImageView) view.findViewById(R.id.row_delete);
             rowTime = (TextView) view.findViewById(R.id.row_time);
             rowName = (TextView) view.findViewById(R.id.row_name);
             rowUrl = (TextView) view.findViewById(R.id.row_url);
+            rowDeviceName = (TextView) view.findViewById(R.id.row_device_name);
         }
     }
 }
