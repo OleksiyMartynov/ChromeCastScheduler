@@ -23,6 +23,11 @@ public class LayoutItemRowAdapter extends RecyclerView.Adapter<LayoutItemRowAdap
         this.deleteClickListener = deleteClickListener;
     }
 
+    public void setData(List<ScheduledItem> items) {
+        objects = items;
+        notifyDataSetChanged();
+    }
+
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_item_row, parent, false));

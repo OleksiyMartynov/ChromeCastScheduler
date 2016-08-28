@@ -14,15 +14,12 @@ import android.view.View;
 
 import com.beastpotato.cast.chromcastscheduler.fragments.CreateItemFragment;
 import com.beastpotato.cast.chromcastscheduler.managers.CastManager;
+import com.beastpotato.cast.chromcastscheduler.managers.DatabaseManager;
 import com.beastpotato.cast.chromcastscheduler.models.ScheduledItem;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements CreateItemFragment.OnAddItemDialogDone, LayoutItemRowAdapter.OnItemDeleteClickListener, LayoutItemRowAdapter.OnItemClickListener {
     private CoordinatorLayout root;
     private RecyclerView itemsView;
-    private List<ScheduledItem> items;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,8 +38,7 @@ public class MainActivity extends AppCompatActivity implements CreateItemFragmen
             }
         });
 
-        items = new ArrayList<>();//todo load from database
-        LayoutItemRowAdapter rowAdapter = new LayoutItemRowAdapter(items, this);
+        LayoutItemRowAdapter rowAdapter = new LayoutItemRowAdapter(DatabaseManager.getInstance(this).getScheduledItems(), this);
         rowAdapter.setDeleteClickListener(this);
         rowAdapter.setOnItemClickListener(this);
         itemsView.setAdapter(rowAdapter);
@@ -67,14 +63,14 @@ public class MainActivity extends AppCompatActivity implements CreateItemFragmen
 
     @Override
     public void onDone(final ScheduledItem item) {
-        items.add(item);
-        itemsView.getAdapter().notifyDataSetChanged();
+        DatabaseManager.getInstance(this).setScheduledItem(item);
+        ((LayoutItemRowAdapter) itemsView.getAdapter()).setData(DatabaseManager.getInstance(this).getScheduledItems());
         Snackbar.make(root, "Item added to schedule", Snackbar.LENGTH_LONG)
                 .setAction("Cancel", new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        items.remove(items.size() - 1);
-                        itemsView.getAdapter().notifyDataSetChanged();
+                        DatabaseManager.getInstance(MainActivity.this).deleteScheduledItem(item);
+                        ((LayoutItemRowAdapter) itemsView.getAdapter()).setData(DatabaseManager.getInstance(MainActivity.this).getScheduledItems());
                     }
                 }).setCallback(new Snackbar.Callback() {
             @Override
@@ -89,13 +85,13 @@ public class MainActivity extends AppCompatActivity implements CreateItemFragmen
 
     @Override
     public void onDelete(ScheduledItem item) {
-        items.remove(item);
-        itemsView.getAdapter().notifyDataSetChanged();
-        //todo remove from db
+        DatabaseManager.getInstance(this).deleteScheduledItem(item);
+        ((LayoutItemRowAdapter) itemsView.getAdapter()).setData(DatabaseManager.getInstance(this).getScheduledItems());
     }
 
     @Override
     public void onItemClick(ScheduledItem item, View view) {
+        //change to dialog to modify item after testing
         try {
             CastManager.getInstance(this).playVideo(this, item.url, item.deviceId);
         } catch (Exception e) {
