@@ -1,4 +1,4 @@
-package com.beastpotato.cast.chromcastscheduler;
+package adapters;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.beastpotato.cast.chromcastscheduler.R;
 import com.beastpotato.cast.chromcastscheduler.models.ScheduledItem;
 
 import java.util.ArrayList;

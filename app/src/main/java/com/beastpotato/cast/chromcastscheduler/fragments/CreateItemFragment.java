@@ -16,12 +16,13 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import com.beastpotato.cast.chromcastscheduler.LayoutDeviceRowAdapter;
 import com.beastpotato.cast.chromcastscheduler.R;
 import com.beastpotato.cast.chromcastscheduler.managers.CastManager;
 import com.beastpotato.cast.chromcastscheduler.models.ScheduledItem;
 
 import java.util.List;
+
+import adapters.LayoutDeviceRowAdapter;
 
 /**
  * Created by Oleksiy on 8/25/2016.

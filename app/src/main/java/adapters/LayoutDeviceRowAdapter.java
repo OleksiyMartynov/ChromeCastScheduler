@@ -1,4 +1,4 @@
-package com.beastpotato.cast.chromcastscheduler;
+package adapters;
 
 import android.support.v7.media.MediaRouter;
 import android.support.v7.widget.RecyclerView;
@@ -9,6 +9,8 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.beastpotato.cast.chromcastscheduler.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,6 +67,10 @@ public class LayoutDeviceRowAdapter extends RecyclerView.Adapter<LayoutDeviceRow
         return objects.size();
     }
 
+    public interface OnDeviceSelectedListener {
+        void onDeviceSelected(MediaRouter.RouteInfo deviceInfo);
+    }
+
     protected class ViewHolder extends RecyclerView.ViewHolder {
         private ImageView deviceIcon;
         private TextView deviceName;
@@ -76,9 +82,5 @@ public class LayoutDeviceRowAdapter extends RecyclerView.Adapter<LayoutDeviceRow
             deviceName = (TextView) view.findViewById(R.id.device_name);
             deviceCheckBox = (CheckBox) view.findViewById(R.id.device_check);
         }
-    }
-
-    public interface OnDeviceSelectedListener {
-        void onDeviceSelected(MediaRouter.RouteInfo deviceInfo);
     }
 }

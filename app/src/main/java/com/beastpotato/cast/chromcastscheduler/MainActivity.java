@@ -17,6 +17,8 @@ import com.beastpotato.cast.chromcastscheduler.managers.CastManager;
 import com.beastpotato.cast.chromcastscheduler.managers.DatabaseManager;
 import com.beastpotato.cast.chromcastscheduler.models.ScheduledItem;
 
+import adapters.LayoutItemRowAdapter;
+
 public class MainActivity extends AppCompatActivity implements CreateItemFragment.OnAddItemDialogDone, LayoutItemRowAdapter.OnItemDeleteClickListener, LayoutItemRowAdapter.OnItemClickListener {
     private CoordinatorLayout root;
     private RecyclerView itemsView;
