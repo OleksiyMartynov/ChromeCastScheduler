@@ -55,13 +55,17 @@ public class CreateItemFragment extends DialogFragment implements TextView.OnEdi
         deviceListView.setAdapter(deviceRowAdapter);
         deviceListView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         getDialog().setTitle("Add item");
-        ScheduledItem item = getArguments().getParcelable(EXTRA_SCHEDULED_ITEM);
-        if (item != null) {
-            this.item = item;
-            itemName.setText(item.name);
-            itemUrl.setText(item.url);
-            itemDate.setHour(item.hour);
-            itemDate.setMinute(item.minute);
+        if (getArguments() != null) {
+            ScheduledItem item = getArguments().getParcelable(EXTRA_SCHEDULED_ITEM);
+            if (item != null) {
+                this.item = item;
+                itemName.setText(item.name);
+                itemUrl.setText(item.url);
+                itemDate.setHour(item.hour);
+                itemDate.setMinute(item.minute);
+            } else {
+                this.item = new ScheduledItem();
+            }
         } else {
             this.item = new ScheduledItem();
         }
@@ -86,8 +90,8 @@ public class CreateItemFragment extends DialogFragment implements TextView.OnEdi
         if (itemName.getText() == null || itemName.getText().length() < 1) {
             itemName.setError("Please enter name");
             return null;
-        } else if (itemUrl.getText() == null || itemUrl.getText().length() < 1 || (!itemUrl.getText().toString().endsWith(".mp4") && !itemUrl.getText().toString().endsWith(".MP4"))) {
-            itemUrl.setError("Please enter URL ending in .MP4");
+        } else if (itemUrl.getText() == null || itemUrl.getText().length() < 1) {
+            itemUrl.setError("Please enter URL with MP4 video");
             return null;
         } else if (selectedDevice == null) {
             Toast.makeText(getContext(), "Select device", Toast.LENGTH_LONG).show();

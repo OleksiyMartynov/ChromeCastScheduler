@@ -42,9 +42,10 @@ public class CastMediaManager {
             @Override
             public void onStatusUpdated() {
                 MediaStatus mediaStatus = remoteMediaPlayer.getMediaStatus();
-                Log.i(TAG,"MEDIA STATUS:"+mediaStatus);
-                if (mediaStatus != null)
+                Log.i(TAG, "MEDIA STATE:" + mediaStatus.getPlayerState());
+                if (mediaStatus != null) {
                     isPlaying = mediaStatus.getPlayerState() == MediaStatus.PLAYER_STATE_PLAYING;
+                }
             }
         });
 
@@ -129,7 +130,7 @@ public class CastMediaManager {
                         public void onResult(RemoteMediaPlayer.MediaChannelResult mediaChannelResult) {
                             if (mediaChannelResult.getStatus().isSuccess()) {
                                 videoIsLoaded = true;
-                                remoteMediaPlayer.play(apiClient);
+                                //remoteMediaPlayer.play(apiClient);
                             }
                         }
                     });
