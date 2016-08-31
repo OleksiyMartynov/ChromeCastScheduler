@@ -1,6 +1,7 @@
 package com.beastpotato.cast.chromcastscheduler.services;
 
 import android.app.IntentService;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.widget.Toast;
@@ -8,6 +9,8 @@ import android.widget.Toast;
 import com.beastpotato.cast.chromcastscheduler.managers.CastManager;
 import com.beastpotato.cast.chromcastscheduler.managers.DatabaseManager;
 import com.beastpotato.cast.chromcastscheduler.models.ScheduledItem;
+import com.beastpotato.cast.chromcastscheduler.receivers.AlarmReceiver;
+import com.beastpotato.cast.chromcastscheduler.utils.Utils;
 
 public class MyIntentService extends IntentService {
     public static final String ACTION_RUN_ITEM = "action_run_item";
@@ -40,11 +43,18 @@ public class MyIntentService extends IntentService {
         if (itemId != -1) {
             Context context = getApplicationContext();
             ScheduledItem item = DatabaseManager.getInstance(context).getScheduledItem(itemId);
-            try {
-                CastManager.getInstance(context).playVideo(context, item.url, item.deviceId);
-            } catch (Exception e) {
-                e.printStackTrace();
-                Toast.makeText(context, "Failed to run scheduled item.", Toast.LENGTH_SHORT).show();
+            if (item != null) {
+                try {
+                    CastManager.getInstance(context).playVideo(context, item.url, item.deviceId);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Toast.makeText(context, "Failed to run scheduled item.", Toast.LENGTH_SHORT).show();
+                }
+            } else {// item been deleted from db
+                Intent intent = new Intent(context, AlarmReceiver.class);
+                intent.putExtra(MyIntentService.EXTRA_ITEM_ID, item.id);
+                PendingIntent alarmIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
+                Utils.cancelAlarm(getApplicationContext(), alarmIntent);
             }
         }
     }

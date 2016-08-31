@@ -38,8 +38,12 @@ public class Utils {
 
 
     public static void cancelAlarm(Context context, ScheduledItem item) {
-        AlarmManager alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         PendingIntent alarmIntent = getPendingIntent(context, item);
+        cancelAlarm(context, alarmIntent);
+    }
+
+    public static void cancelAlarm(Context context, PendingIntent alarmIntent) {
+        AlarmManager alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         alarmMgr.cancel(alarmIntent);
     }
 

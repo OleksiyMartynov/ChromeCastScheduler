@@ -100,7 +100,11 @@ public class DatabaseManager extends OrmLiteSqliteOpenHelper {
     public ScheduledItem getScheduledItem(int itemId) {
         try {
             Dao<ScheduledItem, Integer> dao = getScheduledItemDao();
-            return dao.queryForEq("id", itemId).get(0);
+            List<ScheduledItem> items = dao.queryForEq("id", itemId);
+            if (items != null && items.size() > 0)
+                return items.get(0);
+            else
+                return null;
         } catch (SQLException e) {
             e.printStackTrace();
         }
