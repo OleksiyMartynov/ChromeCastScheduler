@@ -17,22 +17,23 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.beastpotato.cast.chromcastscheduler.R;
+import com.beastpotato.cast.chromcastscheduler.adapters.LayoutDeviceRowAdapter;
 import com.beastpotato.cast.chromcastscheduler.managers.CastManager;
 import com.beastpotato.cast.chromcastscheduler.models.ScheduledItem;
 
 import java.util.List;
-
-import adapters.LayoutDeviceRowAdapter;
 
 /**
  * Created by Oleksiy on 8/25/2016.
  */
 
 public class CreateItemFragment extends DialogFragment implements TextView.OnEditorActionListener, CastManager.OnDeviceListUpdateListener, LayoutDeviceRowAdapter.OnDeviceSelectedListener {
+    public static final String EXTRA_SCHEDULED_ITEM = "extra_scheduled_item";
     private EditText itemName, itemUrl;
     private TimePicker itemDate;
     private RecyclerView deviceListView;
     private MediaRouter.RouteInfo selectedDevice;
+    private ScheduledItem item;
 
     @Nullable
     @Override
@@ -54,6 +55,16 @@ public class CreateItemFragment extends DialogFragment implements TextView.OnEdi
         deviceListView.setAdapter(deviceRowAdapter);
         deviceListView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         getDialog().setTitle("Add item");
+        ScheduledItem item = getArguments().getParcelable(EXTRA_SCHEDULED_ITEM);
+        if (item != null) {
+            this.item = item;
+            itemName.setText(item.name);
+            itemUrl.setText(item.url);
+            itemDate.setHour(item.hour);
+            itemDate.setMinute(item.minute);
+        } else {
+            this.item = new ScheduledItem();
+        }
     }
 
     @Override
@@ -84,7 +95,13 @@ public class CreateItemFragment extends DialogFragment implements TextView.OnEdi
         } else {
             name = itemName.getText().toString();
             url = itemUrl.getText().toString();
-            return new ScheduledItem(name, selectedDevice.getId(), selectedDevice.getName(), url, itemDate.getHour(), itemDate.getMinute());
+            item.name = name;
+            item.deviceId = selectedDevice.getId();
+            item.deciveName = selectedDevice.getName();
+            item.url = url;
+            item.hour = itemDate.getHour();
+            item.minute = itemDate.getMinute();
+            return item;
         }
     }
 

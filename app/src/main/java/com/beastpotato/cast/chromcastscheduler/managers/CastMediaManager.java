@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.beastpotato.cast.chromcastscheduler.Constants;
 import com.google.android.gms.cast.Cast;
@@ -60,7 +61,7 @@ public class CastMediaManager {
         return instance;
     }
 
-    public void playVideo(Context context, CastDevice device, String vidUrl){
+    public void playVideo(final Context context, CastDevice device, String vidUrl) {
         Cast.CastOptions.Builder apiOptionsBuilder = new Cast.CastOptions.Builder(device, new Cast.Listener() {
             @Override
             public void onApplicationDisconnected(int i) {
@@ -77,7 +78,7 @@ public class CastMediaManager {
                     reconnectChannels(bundle);
                 } else {
                     try {
-                        Cast.CastApi.launchApplication(apiClient, Constants.APP_ID, false)
+                        Cast.CastApi.launchApplication(apiClient, Constants.APP_ID)
                                 .setResultCallback(
                                         new ResultCallback<Cast.ApplicationConnectionResult>() {
                                             @Override
@@ -88,6 +89,7 @@ public class CastMediaManager {
                                                      isApplicationStarted = true;
                                                     reconnectChannels(null);
                                                 }else {
+                                                    Toast.makeText(context, "ApplicationConnectionResult :" + status.getStatusCode(), Toast.LENGTH_SHORT).show();
                                                     Log.e(TAG,"ApplicationConnectionResult :"+status.getStatusCode());
                                                 }
                                             }

@@ -5,5 +5,5 @@ package com.beastpotato.cast.chromcastscheduler;
  */
 
 public class Constants {
-    public static final String APP_ID = "D93BF532";
+    public static final String APP_ID = "655F3E53";
 }

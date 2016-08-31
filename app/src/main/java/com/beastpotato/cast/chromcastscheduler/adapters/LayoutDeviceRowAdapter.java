@@ -1,4 +1,4 @@
-package adapters;
+package com.beastpotato.cast.chromcastscheduler.adapters;
 
 import android.support.v7.media.MediaRouter;
 import android.support.v7.widget.RecyclerView;
@@ -64,7 +64,7 @@ public class LayoutDeviceRowAdapter extends RecyclerView.Adapter<LayoutDeviceRow
 
     @Override
     public int getItemCount() {
-        return objects.size();
+        return objects == null ? 0 : objects.size();
     }
 
     public interface OnDeviceSelectedListener {

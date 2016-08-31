@@ -1,6 +1,8 @@
 package com.beastpotato.cast.chromcastscheduler.managers;
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.v7.media.MediaControlIntent;
 import android.support.v7.media.MediaRouteSelector;
 import android.support.v7.media.MediaRouter;
@@ -26,12 +28,20 @@ public class CastManager {
     private CastMediaManager mediaManager;
 
 
-    private CastManager(Context context) {
-        deviceRoutes = new ArrayList<>();
+    private CastManager(final Context context) {
+
         deviceListChangeListeners = new ArrayList<>();
-        mediaRouter = MediaRouter.getInstance(context);
+        deviceRoutes = new ArrayList<>();
         mediaManager = CastMediaManager.getInstance();
-        init(context);
+
+        Handler uiHandler = new Handler(Looper.getMainLooper());
+        uiHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                mediaRouter = MediaRouter.getInstance(context);
+                init(context);
+            }
+        });
     }
 
     public static CastManager getInstance(Context context) {

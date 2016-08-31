@@ -20,10 +20,9 @@ import java.util.List;
 
 public class DatabaseManager extends OrmLiteSqliteOpenHelper {
 
-    private static DatabaseManager instance;
     private static final String DATABASE_NAME = "ormlite.db";
     private static final int DATABASE_VERSION = 1;
-
+    private static DatabaseManager instance;
     private Dao<ScheduledItem, Integer> mScheduledItemDao = null;
 
     private DatabaseManager(Context context) {
@@ -96,5 +95,15 @@ public class DatabaseManager extends OrmLiteSqliteOpenHelper {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public ScheduledItem getScheduledItem(int itemId) {
+        try {
+            Dao<ScheduledItem, Integer> dao = getScheduledItemDao();
+            return dao.queryForEq("id", itemId).get(0);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

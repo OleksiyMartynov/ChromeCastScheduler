@@ -12,12 +12,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.beastpotato.cast.chromcastscheduler.adapters.LayoutItemRowAdapter;
 import com.beastpotato.cast.chromcastscheduler.fragments.CreateItemFragment;
-import com.beastpotato.cast.chromcastscheduler.managers.CastManager;
 import com.beastpotato.cast.chromcastscheduler.managers.DatabaseManager;
 import com.beastpotato.cast.chromcastscheduler.models.ScheduledItem;
-
-import adapters.LayoutItemRowAdapter;
+import com.beastpotato.cast.chromcastscheduler.utils.Utils;
 
 public class MainActivity extends AppCompatActivity implements CreateItemFragment.OnAddItemDialogDone, LayoutItemRowAdapter.OnItemDeleteClickListener, LayoutItemRowAdapter.OnItemClickListener {
     private CoordinatorLayout root;
@@ -52,6 +51,14 @@ public class MainActivity extends AppCompatActivity implements CreateItemFragmen
         itemFragment.show(getSupportFragmentManager(), "add_item_frag");
     }
 
+    private void showAddItemDialog(ScheduledItem item) {
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(CreateItemFragment.EXTRA_SCHEDULED_ITEM, item);
+        CreateItemFragment itemFragment = new CreateItemFragment();
+        itemFragment.setArguments(bundle);
+        itemFragment.show(getSupportFragmentManager(), "add_item_frag");
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
@@ -79,7 +86,8 @@ public class MainActivity extends AppCompatActivity implements CreateItemFragmen
             public void onDismissed(Snackbar snackbar, int event) {
                 super.onDismissed(snackbar, event);
                 if (event != DISMISS_EVENT_ACTION) {
-                    //todo start service
+                    Utils.cancelAlarm(MainActivity.this, item);
+                    Utils.setAlarmForScheduledItem(MainActivity.this, item);
                 }
             }
         }).show();
@@ -93,9 +101,8 @@ public class MainActivity extends AppCompatActivity implements CreateItemFragmen
 
     @Override
     public void onItemClick(ScheduledItem item, View view) {
-        //change to dialog to modify item after testing
         try {
-            CastManager.getInstance(this).playVideo(this, item.url, item.deviceId);
+            showAddItemDialog(item);
         } catch (Exception e) {
             e.printStackTrace();
         }
