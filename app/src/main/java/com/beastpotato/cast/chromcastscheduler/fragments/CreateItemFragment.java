@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
+import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -31,6 +32,7 @@ public class CreateItemFragment extends DialogFragment implements TextView.OnEdi
     public static final String EXTRA_SCHEDULED_ITEM = "extra_scheduled_item";
     private EditText itemName, itemUrl;
     private TimePicker itemDate;
+    private NumberPicker itemRepeat;
     private RecyclerView deviceListView;
     private MediaRouter.RouteInfo selectedDevice;
     private ScheduledItem item;
@@ -44,6 +46,10 @@ public class CreateItemFragment extends DialogFragment implements TextView.OnEdi
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        itemRepeat = (NumberPicker) view.findViewById(R.id.item_repeat);
+        itemRepeat.setMinValue(1);
+        itemRepeat.setMaxValue(24);
+        itemRepeat.setValue(24);
         itemName = (EditText) view.findViewById(R.id.item_name);
         itemUrl = (EditText) view.findViewById(R.id.item_url);
         itemUrl.setOnEditorActionListener(this);
@@ -59,6 +65,7 @@ public class CreateItemFragment extends DialogFragment implements TextView.OnEdi
             ScheduledItem item = getArguments().getParcelable(EXTRA_SCHEDULED_ITEM);
             if (item != null) {
                 this.item = item;
+                itemRepeat.setValue(item.repeatHour);
                 itemName.setText(item.name);
                 itemUrl.setText(item.url);
                 itemDate.setHour(item.hour);
@@ -105,6 +112,7 @@ public class CreateItemFragment extends DialogFragment implements TextView.OnEdi
             item.url = url;
             item.hour = itemDate.getHour();
             item.minute = itemDate.getMinute();
+            item.repeatHour = itemRepeat.getValue();
             return item;
         }
     }

@@ -4,6 +4,7 @@ import android.app.IntentService;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.support.v7.media.MediaRouter;
 import android.widget.Toast;
 
 import com.beastpotato.cast.chromcastscheduler.managers.CastManager;
@@ -11,6 +12,8 @@ import com.beastpotato.cast.chromcastscheduler.managers.DatabaseManager;
 import com.beastpotato.cast.chromcastscheduler.models.ScheduledItem;
 import com.beastpotato.cast.chromcastscheduler.receivers.AlarmReceiver;
 import com.beastpotato.cast.chromcastscheduler.utils.Utils;
+
+import java.util.List;
 
 public class MyIntentService extends IntentService {
     public static final String ACTION_RUN_ITEM = "action_run_item";
@@ -39,22 +42,50 @@ public class MyIntentService extends IntentService {
         }
     }
 
-    private void handleActionRunItem(int itemId) {
+    private void handleActionRunItem(final int itemId) {
         if (itemId != -1) {
-            Context context = getApplicationContext();
-            ScheduledItem item = DatabaseManager.getInstance(context).getScheduledItem(itemId);
+            final Context context = getApplicationContext();
+            final ScheduledItem item = DatabaseManager.getInstance(context).getScheduledItem(itemId);
             if (item != null) {
-                try {
-                    CastManager.getInstance(context).playVideo(context, item.url, item.deviceId);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    Toast.makeText(context, "Failed to run scheduled item.", Toast.LENGTH_SHORT).show();
-                }
+                CastManager.OnDeviceListUpdateListener deviceListUpdateListener = null;
+                final CastManager.OnDeviceListUpdateListener finalDeviceListUpdateListener = deviceListUpdateListener;
+                deviceListUpdateListener = new CastManager.OnDeviceListUpdateListener() { //will get all devices if not already scanned
+                    @Override
+                    public void onDeviceListUpdate(List<MediaRouter.RouteInfo> list, MediaRouter.RouteInfo deviceDelta) {
+                        for (MediaRouter.RouteInfo routeInfo : list) {
+                            if (routeInfo.getId().equals(item.deviceId)) {
+                                CastManager.getInstance(context).removeOnDeviceListChangeListener(finalDeviceListUpdateListener);
+                                try {
+                                    CastManager.getInstance(getApplicationContext()).playVideo(getApplicationContext(), item.url, item.deviceId);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                    Toast.makeText(getApplicationContext(), "Failed to run scheduled item.", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        }
+                    }
+                };
+                CastManager.getInstance(context).addOnDeviceListUpdateListener(deviceListUpdateListener);
+                processDeviceList(CastManager.getInstance(context).getDeviceRoutes(), item);// process if already scanned for devices.
+
             } else {// item been deleted from db
                 Intent intent = new Intent(context, AlarmReceiver.class);
-                intent.putExtra(MyIntentService.EXTRA_ITEM_ID, item.id);
+                intent.putExtra(MyIntentService.EXTRA_ITEM_ID, itemId);
                 PendingIntent alarmIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
                 Utils.cancelAlarm(getApplicationContext(), alarmIntent);
+            }
+        }
+    }
+
+    private void processDeviceList(List<MediaRouter.RouteInfo> list, ScheduledItem item) {
+        for (MediaRouter.RouteInfo routeInfo : list) {
+            if (routeInfo.getId().equals(item.deviceId)) {
+                try {
+                    CastManager.getInstance(getApplicationContext()).playVideo(getApplicationContext(), item.url, item.deviceId);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Toast.makeText(getApplicationContext(), "Failed to run scheduled item.", Toast.LENGTH_SHORT).show();
+                }
             }
         }
     }

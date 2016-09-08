@@ -12,15 +12,7 @@ import com.j256.ormlite.table.DatabaseTable;
 
 @DatabaseTable
 public class ScheduledItem implements Parcelable {
-    public static final Parcelable.Creator<ScheduledItem> CREATOR = new Parcelable.Creator<ScheduledItem>() {
-        public ScheduledItem createFromParcel(Parcel source) {
-            return new ScheduledItem(source);
-        }
 
-        public ScheduledItem[] newArray(int size) {
-            return new ScheduledItem[size];
-        }
-    };
     @DatabaseField(generatedId = true)
     public int id;
     @DatabaseField
@@ -35,29 +27,12 @@ public class ScheduledItem implements Parcelable {
     public int hour;
     @DatabaseField
     public int minute;
+    @DatabaseField
+    public int repeatHour;
 
     public ScheduledItem() {
     }
 
-
-    public ScheduledItem(String name, String deviceId, String deviceName, String url, int hour, int minute) {
-        this.name = name;
-        this.deviceId = deviceId;
-        this.deciveName = deviceName;
-        this.url = url;
-        this.hour = hour;
-        this.minute = minute;
-    }
-
-    protected ScheduledItem(Parcel in) {
-        this.id = in.readInt();
-        this.name = in.readString();
-        this.deviceId = in.readString();
-        this.deciveName = in.readString();
-        this.url = in.readString();
-        this.hour = in.readInt();
-        this.minute = in.readInt();
-    }
 
     @Override
     public int describeContents() {
@@ -73,5 +48,27 @@ public class ScheduledItem implements Parcelable {
         dest.writeString(this.url);
         dest.writeInt(this.hour);
         dest.writeInt(this.minute);
+        dest.writeInt(this.repeatHour);
     }
+
+    protected ScheduledItem(Parcel in) {
+        this.id = in.readInt();
+        this.name = in.readString();
+        this.deviceId = in.readString();
+        this.deciveName = in.readString();
+        this.url = in.readString();
+        this.hour = in.readInt();
+        this.minute = in.readInt();
+        this.repeatHour = in.readInt();
+    }
+
+    public static final Parcelable.Creator<ScheduledItem> CREATOR = new Parcelable.Creator<ScheduledItem>() {
+        public ScheduledItem createFromParcel(Parcel source) {
+            return new ScheduledItem(source);
+        }
+
+        public ScheduledItem[] newArray(int size) {
+            return new ScheduledItem[size];
+        }
+    };
 }

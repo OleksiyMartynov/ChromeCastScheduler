@@ -32,7 +32,7 @@ public class Utils {
         calendar.set(Calendar.MINUTE, item.minute);
         alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP,
                 calendar.getTimeInMillis(),
-                AlarmManager.INTERVAL_DAY,
+                item.repeatHour * 60 * 60 * 1000,
                 alarmIntent);
     }
 
